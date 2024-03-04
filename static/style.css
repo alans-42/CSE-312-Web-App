@@ -1,0 +1,64 @@
+.background {
+    background-color: aquamarine;
+}
+
+.active {
+    background-color: #202020;
+}
+
+.navbar {
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    top: 0;
+    position: relative;
+  }
+  
+.float{
+    float: left;
+}
+  
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 15px 35px;
+    text-decoration: none;
+}
+  
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.circle {
+    height: 500px;
+    width: 500px;
+    background-color: red;
+    border-radius: 50%;
+  }
+
+.square {
+    height: 500px;
+    width: 500px;
+    background-color: palevioletred;
+}
+
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    /* height: 300px; Should be removed. Only for demonstration */
+  }
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+* {
+    box-sizing: border-box;
+  }

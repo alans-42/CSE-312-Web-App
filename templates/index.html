@@ -4,25 +4,28 @@
         <title>Generic Fitness App</title>
     </head>
 
-    <link rel="stylesheet" href="static/style.css">
-    <link rel="" href="static/style.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="" href="/static/style.css">
 
     <body class="background">
-        <h1 style="text-align: center;">Welcome {USER}</h1>
+        <div class="header" style="height: 120px;">
+            <a class="welcome">Welcome {{USER}}</a>
+            <span class="nav-button" onclick="openNav()">&#9783;</span>
+        </div>
 
-        <ul class="navbar">
-            <li class="float"><a href="newFile.html">Home</a></li>
-            <li class="float"><a href="">About Me</a></li>
-            <li class="float"><a href="">Gallery</a></li>
-            <li class="float"><a href="">Baseball</a></li>
-            <li class="float"><a href="">Other</a></li>
-        </ul>
+        <div id="navbar" class="navbar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/">Home</a>
+            <a href="/templates/login.html">Account</a>
+            <a href="#">Weekly<br>Calender</a>
+            <a href="#">Calories</a>
+            <a href="#">Pictures</a>
+        </div>
 
         <div style="text-align: center; font-size: 100px;">
             <p>DAILY QUOTE</p>
         </div>
 
-        <button onclick="hello()">Press Me</button>
         <div class="row">
             <div class="column">
                 <div class="circle"></div>
@@ -33,5 +36,7 @@
         </div>
 
         <img src="/static/muscle.jpeg">
+
+        <script src="/static/functions.js"></script>
     </body>
 </html>

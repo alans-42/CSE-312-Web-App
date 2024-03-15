@@ -97,3 +97,42 @@
     height: 500px;
     width: 500px;
 }
+
+#alerts {
+    display:none;
+    background: grey;
+    color: #000;
+    position: relative;
+    padding: 20px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+}
+  
+#alerts p {
+    padding: 5px 35px;
+    font-size: 18px;
+}
+
+.valid {
+    color: green;
+}
+  
+.valid:before {
+    position: relative;
+    left: -35px;
+    content: "✔";
+}
+  
+  /* Add a red text color and an "x" icon when the requirements are wrong */
+.invalid {
+    color: red;
+}
+  
+.invalid:before {
+    position: relative;
+    left: -35px;
+    content: "✖";
+}

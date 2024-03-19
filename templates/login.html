@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/static/style.css">
 
     <body class="background">
+        <div class="header" style="height: 120px;">
+            <span class="nav-button" onclick="openNav()">&#9783;</span>
+        </div>
         <div id="navbar" class="navbar">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="/">Home</a>
@@ -17,20 +20,22 @@
         </div>
         
         <div class="username">
-            <p style="font-size: 50px;text-align: center;">Sign In or Sign Up</a></p>
-            <form action="/account" method="post" encode="application/form-data" id="form">
+            <p style="font-size: 40px;text-align: center;">Log In</a></p>
+            <form action="/account_login" method="post" encode="application/form-data" id="form">
             <!-- <div id="username_form"> -->
                 <label>Username:<br><br>
-                    <input id="username" type="text" name="username" style="width: 300px; height: 35px;"/>
+                    <input id="username" type="text" name="username" style="width: 250px; height: 35px;"/>
                 </label><br><br>
                 <!-- <br><br><input type="submit" value="Submit" onclick="submit_username()"> -->
             <!-- </div> -->
                 <label>Password:<br><br>
-                    <input id="password" type="password" name="password" style="width: 300px; height: 35px;"/>
+                    <input id="password" type="password" name="password" style="width: 250px; height: 35px;"/>
                 </label><br><br>
                 <input type="submit" value="Submit" style="background-color: black; color: white; width: 100px; height: 30px;">
             </form>
-
+            <br>
+            <a>{{ MESSAGE }}</a>
+            
             <!-- <form action="/password_login" method="post" encode="application/x-www-form-urlencoded" hidden>
                 <label>Password:<br>
                     <input id="login-password" type="text" name="password_login"/>
@@ -39,7 +44,8 @@
             </form> -->
 
         </div>
+        
 
         <script src="/static/functions.js"></script>
     </body>
-</html>
+</html>        

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="" href="/static/style.css">
+
+    <body class="background">
+        <div class="header" style="height: 120px;">
+            <span class="nav-button" onclick="openNav()">&#9783;</span>
+        </div>
+        <div id="navbar" class="navbar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/">Home</a>
+            <a href="/templates/login.html">Account</a>
+            <a href="#">Weekly<br>Calender</a>
+            <a href="#">Calories</a>
+            <a href="#">Pictures</a>
+        </div>
+        
+
+        <div class="username">
+            <p style="font-size: 40px;text-align: center;">Create an account:</a></p>
+            <form action="/account_register" method="post" encode="application/form-data" id="form">
+            
+                <label>Username:<br><br>
+                    <input id="username" type="text" name="username" style="width: 300px; height: 35px;"/>
+                </label><br><br>
+    
+                <label>Password:<br><br>
+                    <input onfocus="show_window()" onblur="no_window()" onkeyup="validate_pass()" id="password" type="password" name="password" style="width: 300px; height: 35px;"/>
+                </label><br>
+                <input type="checkbox" onclick="show_pass()"><label style="font-size: 20px">Show password</label>
+                <br>
+                <input id="pass_button" hidden type="submit" value="Submit" style="background-color: black; color: white; width: 100px; height: 30px;">
+                
+                
+            </form>
+            <p style="font-size: 20px; color: black;"><a href="./login.html">Already have an account? Click here ot login</a></p>
+           
+
+        </div>
+
+    </div>
+    <div id="alerts">
+        <h3>Password must conntain the following:</h3>
+        <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+        <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+        <p id="number" class="invalid">A <b>number</b></p>
+        <p id="special" class="invalid">A <b>special charecter</b></p>
+        <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+    </div>
+
+    <script src="/static/functions.js"></script>
+</body>
+</html>        

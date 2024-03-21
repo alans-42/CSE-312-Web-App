@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Generic Fitness App</title>
+    </head>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <body class="background">
+        <div class="header" style="height: 120px;">
+            <span class="nav-button" onclick="openNav()">&#9783;</span>
+        </div>
+        <div id="navbar" class="navbar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/">Home</a>
+            <a href="/templates/register.html">Account</a>
+            <a href="#">Weekly<br>Calender</a>
+            <a href="#">Calories</a>
+            <a href="#">Pictures</a>
+        </div>
+
+        <form action="/user_info" method="post" enctype="application/x-www-form-urlencoded" style="text-align: center;">
+            <label style="margin-left: 20px; margin-bottom: 20px; font-size: 20px;">First and Last name:<br>
+                <input style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 15px" id="user_fullname" type="text" name="user_fullname"/>
+            </label>
+            <br/>
+            <label style="margin-left: 20px; margin-bottom: 20px; font-size: 20px">Gender:<br>
+                <input style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 15px" id="user_gender" type="text" name="user_gender" required/>
+            </label>
+            <br/>
+            <label style="margin-left: 20px; margin-bottom: 20px; font-size: 20px">Age:<br>
+                <input style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 15px" id="user_age" type="text" name="user_age" required/>
+            </label>
+            <br/>
+            <label style="margin-left: 20px; margin-bottom: 20px; font-size: 20px">Weight in lbs:<br>
+                <input style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 15px" id="user_weight" type="text" name="user_weight" required/>
+            </label>
+            <br/>
+            <label style="margin-left: 20px; margin-bottom: 20px; font-size: 20px">Height in inches:<br>
+                <input style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px; font-size: 15px" id="user_height" type="text" name="user_height" required/>
+            </label>
+            <br/>
+            <input type="submit" value="enter" style="font-size: 20px">
+        </form>
+
+        <script src="/static/functions.js"></script>
+    </body>
+</html>    

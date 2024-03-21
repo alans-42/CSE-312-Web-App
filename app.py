@@ -1,5 +1,7 @@
 from flask import Flask, send_from_directory, make_response, render_template, request
 from helper import *
+from markupsafe import escape
+import math
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -25,6 +27,14 @@ def send_css(path):
 
 @app.route('/templates/<path:path>', methods=['GET'])
 def send_templates(path):
+    token = request.cookies.get("auth_toke",-1)
+    if path == "register.html" and token != -1:
+        if check_token(token) != False:
+            response = make_response()
+            response.headers["location"] = "/account_user"
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.status = 302
+            return response
     file =  send_from_directory('templates', path)
     response = make_response(file)
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -34,15 +44,90 @@ def send_templates(path):
 def check_username():
     username = request.form["username"]
     password = request.form["password"]
-    sign_up(username,password)
+    password2 = request.form["password2"]
+    #validate passwords match
+    if password != password2:
+        response = make_response()
+        response.headers["location"] = "/templates/register.html"
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.status = 302
+        return response
+    status = sign_up(username,password)
+    if not status:
+        response = make_response()
+        response.headers["location"] = "/templates/register.html"
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.status = 302
+        return response
     response = make_response()
     response.headers["location"] = "/templates/login.html"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.status = 302
+    return response
+#this is the account page after successful login
+@app.route("/account_user", methods = ["GET"])
+def show_account():
+    error = None
+    username = ""
+    cook = request.cookies.get("auth_toke",-1)
+    if cook != -1:
+        user = check_token(cook)
+        if user:
+            username = user["username"]
+    account_info = get_account_info(username)
+    if account_info != -1:
+        height = int(account_info["height_inches"])
+        feet = math.floor(height / 12)
+        inches = height - (feet * 12)
+        str_height = str(feet) + " feet and " + str(inches) + " inches"
+        file = render_template('account.html', error=error,USER=username,name=account_info["fullname"],Gender=account_info["gender"],
+                               age=account_info["age"],weight=account_info["weight"],height = str_height)
+    else:
+        file = render_template('account.html', error=error,USER=username)
+    response = make_response(file)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+#logout endpoint 
+@app.route("/logout_user", methods = ["POST"]) 
+def log_out():
+    cook = request.cookies.get("auth_toke",-1)
+    response = make_response()
+    response.headers["location"] = "/"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.status = 302
+    if cook != -1:
+        log_user_out(cook)
+        response.delete_cookie("auth_toke")
+    return response
+
+#this is te endpoint to send the html form for user info
+@app.route("/user_info_page", methods = ["POST"])
+def serve_user():
+    file = render_template("account_info.html")
+    response = make_response(file)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+#this is the end point reached when the user presses enter after entering data
+@app.route("/user_info",methods = ["POST"])
+def user_info():
+    user_info_dict = {}
+    user_info_dict["fullname"] = escape(request.form["user_fullname"])
+    user_info_dict["gender"] = escape(request.form["user_gender"])
+    user_info_dict["age"] = escape(request.form["user_age"])
+    user_info_dict["weight"] = escape(request.form["user_weight"])
+    user_info_dict["height_inches"] = escape(request.form["user_height"])
+    add_user_data(user_info_dict,request.cookies.get("auth_toke",-1))
+    #return account page redirect
+    response = make_response()
+    response.headers["location"] = "/account_user"
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.status = 302
     return response
 
 @app.route("/account_login",methods = ["POST"])
 def validate_user():
+    error = None
     username = request.form["username"]
     password = request.form["password"]
     token = log_in(username,password)
@@ -53,7 +138,7 @@ def validate_user():
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.status = 302
     else:
-        file = render_template('login.html',MESSAGE="Invalid username or password, please try again")
+        file = render_template('login.html',error=error,MESSAGE="Invalid username or password, please try again")
         response = make_response(file)
         response.headers['X-Content-Type-Options'] = 'nosniff'
 

@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, make_response, render_template, request
+from flask import Flask, send_from_directory, make_response, render_template, request, redirect
 from helper import *
 app = Flask(__name__)
 
@@ -7,11 +7,11 @@ def index():
     error = None
     username = ""
     cook = request.cookies.get("auth_toke",-1)
+    file = render_template('index.html', error=error,USER=username)
     if cook != -1:
         user = check_token(cook)
         if user:
             username = user["username"]
-    file = render_template('index.html', error=error,USER=username)
     response = make_response(file)
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
@@ -25,7 +25,7 @@ def send_css(path):
 
 @app.route('/templates/<path:path>', methods=['GET'])
 def send_templates(path):
-    file =  send_from_directory('templates', path)
+    file = send_from_directory('templates', path)
     response = make_response(file)
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
@@ -56,6 +56,42 @@ def validate_user():
         file = render_template('login.html',MESSAGE="Invalid username or password, please try again")
         response = make_response(file)
         response.headers['X-Content-Type-Options'] = 'nosniff'
+
+    return response
+
+@app.route("/send-post", methods=['POST'])
+def makeForumPost():
+    response = make_response()
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    # Only allows logged in users to post
+    if request.cookies.get('auth_toke', 0) and check_token(request.cookies['auth_toke']):
+        POST_posts(check_token(request.cookies['auth_toke']), request.data)
+        response.status = 200
+    else:
+        response.status = 403
+
+    return response
+
+@app.route("/send-post", methods=['GET'])
+def getForumPosts():
+    response = make_response()
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    data = GET_posts()
+    response.set_data(json.dumps(data))
+    response.status = 200
+
+    return response
+
+@app.route("/send-comment", methods=['POST'])
+def makeComment():
+    response = make_response()
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    # Only allows logged in users to post
+    if request.cookies.get('auth_toke', 0) and check_token(request.cookies['auth_toke']):
+        POST_comment(check_token(request.cookies['auth_toke']), request.data)
+        response.status = 200
+    else:
+        response.status = 403
 
     return response
 

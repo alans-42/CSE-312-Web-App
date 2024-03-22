@@ -9,7 +9,7 @@
 
     <body class="background" onload="refresh()"> 
         <div class="header" style="height: 120px;">
-            <a class="welcome">Welcome {{USER}}</a>
+            <a class="welcome">Share</a>
             <span class="nav-button" onclick="openNav()">&#9783;</span>
         </div>
 
@@ -23,22 +23,11 @@
             <a href="/templates/share.html">Share</a>
         </div>
 
-        <div style="text-align: center; font-size: 50px;">
-            <p>DAILY QUOTE</p>
-        </div>
-
-        <div class="row">
-            <div class="column">
-                <div class="circle"></div>
-                <div class="square"></div>
-            </div>
-            <div class="column">
-                <div id="forum"></div><br>
-                <label style="font-size: 20px; color: black; text-decoration: none;">Share With Others!
-                    <a href="/templates/share.html"><button style="background-color: black; color: white; width: 50px; height: 30px;">Go</button></a>
-                </label>
-            </div>
-        </div>
+        <div id="forum" style="margin: 20px"></div><br>
+        <label style="margin-left: 20px; font-size: 20px; color: black;">Share:<br>
+            <textarea id="forum-input" name="forum-input" rows="4" cols="50" maxlength="200" style="resize: none; margin-left: 20px"></textarea><br>
+            <button style="margin-left: 20px; background-color: black; color: white; width: 50px; height: 30px;" id="forum-button" onclick="sendPost()">Post</button>
+        </label>
 
         <script src="/static/functions.js"></script>
     </body>

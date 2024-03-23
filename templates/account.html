@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Generic Fitness App</title>
+    </head>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <body class="background">
+        <div class="header" style="height: 120px;">
+            <a class="welcome">{{USER}}'s account info</a>
+            <span class="nav-button" onclick="openNav()">&#9783;</span>
+        </div>
+        <div id="navbar" class="navbar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/">Home</a>
+            <a href="/templates/register.html">Account</a>
+            <a href="#">Weekly<br>Calender</a>
+            <a href="#">Calories</a>
+            <a href="#">Pictures</a>
+            <a href="/templates/share.html">Share</a>
+        </div>
+        <script src="/static/functions.js"></script>
+        <br> 
+        <p style ="font-size:25px; margin-left: 20px;">Name: {{name}}</p>
+        <br>
+        <p style ="font-size:25px; margin-left: 20px;">Gender: {{Gender}}</p>
+        <br>
+        <p style ="font-size:25px; margin-left: 20px;">Age: {{age}} years</p>
+        <br>
+        <p style ="font-size:25px; margin-left: 20px;">Weight: {{weight}} lbs</p>
+        <br>
+        <p style ="font-size:25px; margin-left: 20px;">Height: {{height}} </p>
+
+        <form action="/user_info_page" method="post" enctype="application/x-www-form-urlencoded">
+            <input type="submit" value="add my info" style="margin-left: 20px; margin-bottom: 20px; background-color: black; color: white; width: 100px; height: 30px;">
+        </form>
+
+        <form action="/logout_user" method="post" enctype="application/x-www-form-urlencoded">
+            <input type="submit" value="LogOut" style="margin-left: 20px; margin-bottom: 20px; background-color: black; color: white; width: 100px; height: 30px;">
+        </form>
+    </body>
+    
+</html>

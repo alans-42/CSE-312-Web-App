@@ -134,6 +134,8 @@ function show_window(){
 function no_window(){
     document.getElementById("alerts").style.display = "none";
 }
+
+
 //live password validaiton
 function validate_pass(){
   var valid = 0;
@@ -190,7 +192,7 @@ function validate_pass(){
     length.classList.add("invalid");
   }
   var pass_button = document.getElementById("pass_button");
-  if(valid===5){
+  if(valid===5 && password2.value === password.value){
     pass_button.removeAttribute("hidden");
   }else{
     pass_button.setAttribute("hidden","");
@@ -199,9 +201,12 @@ function validate_pass(){
 // this is the function for the show pass check box
 function show_pass(){
     var type_txt = document.getElementById("password");
-    if (type_txt.type === "password"){
+    var type_txt2 = document.getElementById("password2");
+    if (type_txt.type === "password" && type_txt2.type === "password"){
         type_txt.type = "text";
+        type_txt2.type= "text";
     }else{
         type_txt.type = "password";
+        type_txt2.type = "password";
     }
 }

@@ -15,10 +15,11 @@
         <div id="navbar" class="navbar">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="/">Home</a>
-            <a href="/templates/login.html">Account</a>
+            <a href="/templates/register.html">Account</a>
             <a href="#">Weekly<br>Calender</a>
             <a href="#">Calories</a>
             <a href="#">Pictures</a>
+            <a href="/templates/share.html">Share</a>
         </div>
         
 
@@ -26,12 +27,16 @@
             <p style="font-size: 40px;text-align: center;">Create an account:</a></p>
             <form action="/account_register" method="post" encode="application/form-data" id="form">
             
-                <label>Username:<br><br>
+                <label>Username:<br>
                     <input id="username" type="text" name="username" style="width: 300px; height: 35px;"/>
-                </label><br><br>
+                </label><br>
     
-                <label>Password:<br><br>
+                <label>Password:<br>
                     <input onfocus="show_window()" onblur="no_window()" onkeyup="validate_pass()" id="password" type="password" name="password" style="width: 300px; height: 35px;"/>
+                </label><br>
+                
+                <label> Repeat Password:<br>
+                    <input onfocus="show_window()" onblur="no_window()" onkeyup="validate_pass()" id="password2" type="password" name="password2" style="width: 300px; height: 35px;"/>
                 </label><br>
                 <input type="checkbox" onclick="show_pass()"><label style="font-size: 20px">Show password</label>
                 <br>

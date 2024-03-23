@@ -8,9 +8,13 @@ mongo_client = MongoClient("mongo")
 data_base = mongo_client["loopie_boop"]
 user_data = data_base["users"]
 token_data = data_base["token"]
+user_info = data_base["user_info"]
 
 # adds salted+hashed verison of password ot database alogn with user name
 def sign_up(username,password):
+    find_dup_user = user_data.find_one({"username":username})
+    if find_dup_user:
+        return False
     pass_bytes = password.encode()
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(pass_bytes,salt)
@@ -51,6 +55,41 @@ def check_token(auth_token):
         return user_info_dict
     else:
         return False
+
+#function deletes auth token from db
+def log_user_out(token):
+    auth_token = token.encode()
+    hasher = hashlib.sha256()
+    hasher.update(auth_token)
+    auth_token = hasher.digest()
+    token_data.delete_one({"token":auth_token})
+
+#this adds user info for first time or updates info if already some present
+def add_user_data(user_dict,token):
+    if token != -1:
+        auth_token = token.encode()
+        hasher = hashlib.sha256()
+        hasher.update(auth_token)
+        auth_token = hasher.digest()
+        user_token_dict = token_data.find_one({"token":auth_token},{"_id":0})
+        if user_token_dict != None:
+            username = user_token_dict["username"]
+            user_dict["username"] = username
+            find_user = user_info.find_one({"username":username})
+            if find_user:
+                filter1 = {"username":username}
+                new_vals = {"$set":user_dict}
+                user_info.update_one(filter1,new_vals)
+            else:
+                user_info.insert_one(user_dict)
+
+#this pulls user info from db and returns dict
+def get_account_info(username):
+    account_info = user_info.find_one({"username":username},{"_id":0})
+    if account_info:
+        return account_info
+    else:
+        return -1
 
 
     

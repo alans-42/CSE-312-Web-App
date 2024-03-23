@@ -1,6 +1,12 @@
-from flask import Flask, send_from_directory, make_response, render_template, request
+from flask import Flask, send_from_directory, make_response, render_template, request, render_template_string, escape
 from helper import *
 app = Flask(__name__)
+
+from pymongo import MongoClient
+from bson.json_util import dumps
+client = MongoClient('mongodb_uri')
+db = client.fitness_app
+lunch_logs = db.lunch_logs
 
 @app.route('/', methods=['GET'])
 def index():
@@ -59,6 +65,37 @@ def validate_user():
 
     return response
 
+@app.route('/log_lunch', methods=['POST'])
+def log_lunch():
+    lunch = escape(request.form['lunch'])
+    calories = escape(request.form['calories'])
+    lunch_logs.insert_one({'lunch': lunch, 'calories': calories})
+    return "Lunch logged successfully!"
+
+
+@app.route('/view_logs')
+def view_logs():
+    logs = list(lunch_logs.find({}))
+    logs_json = dumps(logs)
+    
+    logs_template = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Lunch Logs</title>
+    </head>
+    <body>
+        <h1>Lunch Logs</h1>
+        {% for log in logs %}
+            <div>
+                <p>Lunch: {{ log['lunch'] }}</p>
+                <p>Calories: {{ log['calories'] }}</p>
+            </div>
+        {% endfor %}
+    </body>
+    </html>
+    '''
+    return render_template_string(logs_template, logs=logs)
 
 if __name__ == "__main__":
     host = '0.0.0.0'

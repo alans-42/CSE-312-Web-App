@@ -32,7 +32,16 @@
                 <div class="circle"></div>
             </div>
             <div class="column">
-                <div class="square"></div>
+                <div class="square">
+                    <h1>Daily Log</h1>
+                    <form action="/log_lunch" method="post" encode="application/form-data" id="form">
+                        <label for="lunch">Lunch:</label><br>
+                        <input type="text" id="lunch" name="lunch"><br>
+                        <label for="calories">Calories:</label><br>
+                        <input type="number" id="calories" name="calories"><br>
+                        <input type="submit" value="Submit">
+                    </form> 
+                </div>                
             </div>
         </div>
 

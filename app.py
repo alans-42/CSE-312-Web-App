@@ -20,6 +20,7 @@ def index():
 
 @app.route('/static/<path:path>', methods=['GET'])
 def send_css(path):
+    # I think this not beinf render temlate may be the reason that the {{message}} is showing up
     file = send_from_directory('static', path)
     response = make_response(file)
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -53,7 +54,7 @@ def check_username():
         response.status = 302
         return response
     status = sign_up(username,password)
-    if not status:
+    if status == False:
         response = make_response()
         response.headers["location"] = "/templates/register.html"
         response.headers['X-Content-Type-Options'] = 'nosniff'

@@ -177,7 +177,7 @@
     margin: 0;
   }
   
-  input[type=text], select {
+  /* input[type=text], select {
       width: 70%;
       padding: 6px 8px;
       margin: 4px 0;
@@ -187,7 +187,7 @@
       text-align: left;
       box-sizing: border-box;
       background-color: lightskyblue;
-  }
+  } */
   
   .food { 
     width: 40%;

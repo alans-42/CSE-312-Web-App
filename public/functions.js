@@ -127,6 +127,10 @@ function sendPost(){
   setTimeout(refreshPosts, 100);
 }
 
+function submit_username(){
+    document.getElementById("username_form").style.width = "0px"
+}
+
 function show_window(){
     document.getElementById("alerts").style.display = "block";
 }
@@ -210,3 +214,9 @@ function show_pass(){
         type_txt2.type = "password";
     }
 }
+// This funtion is to clear search bar
+function clear(){
+  const chatTextBox = document.getElementById("food-text-box");
+  chatTextBox.value = "";
+}
+// hi

@@ -10,7 +10,7 @@ user_info = data_base["user_info"]
 posts = data_base["posts"]
 ids = data_base["post_ids"]
 if ids.find_one({"type": "post"}) == None:
-    ids.insert_one({"type": "post", "id": 0})
+    ids.insert_one({"type": "post", "id": 0}) 
 
 # adds salted+hashed verison of password ot database alogn with user name
 def sign_up(username,password):

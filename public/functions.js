@@ -20,9 +20,9 @@ function refreshPosts(){
             const posts = JSON.parse(this.response);
             for (var post of posts) {
                 makePost(post);
-                console.log(post);
+                // console.log(post);
                 for (var comment of post['comments']){
-                  console.log(comment);
+                  // console.log(comment);
                   postComment(comment, post['postId']);
                 }
             }

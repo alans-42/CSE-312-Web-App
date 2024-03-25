@@ -1,7 +1,7 @@
-from flask import Flask, send_from_directory, make_response, render_template, request, redirect
+from flask import Flask, send_file, make_response, render_template, request
 from helper import *
-from markupsafe import escape
-import math
+from html import escape
+import math, mimetypes, sys
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -9,21 +9,23 @@ def index():
     error = None
     username = ""
     cook = request.cookies.get("auth_toke",-1)
-    file = render_template('index.html', error=error,USER=username)
     if cook != -1:
         user = check_token(cook)
         if user:
             username = user["username"]
+    file = render_template('index.html', error=error,USER=username)
     response = make_response(file)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
+    print("Hey", file=sys.stderr)
     return response
 
-@app.route('/static/<path:path>', methods=['GET'])
-def send_css(path):
-    # I think this not beinf render temlate may be the reason that the {{message}} is showing up
-    file = send_from_directory('static', path)
-    response = make_response(file)
+@app.route('/public/<path:path>', methods=['GET'])
+def send_static_files(path):
+    mimeType = mimetypes.guess_type(path)
+    response = make_response(send_file('public/' + path, mimetype=mimeType[0]))
     response.headers['X-Content-Type-Options'] = 'nosniff'
+    
     return response
 
 @app.route('/templates/<path:path>', methods=['GET'])
@@ -36,20 +38,22 @@ def send_templates(path):
             response.headers['X-Content-Type-Options'] = 'nosniff'
             response.status = 302
             return response
-    file = send_from_directory('templates', path)
+    file = render_template(path)
     response = make_response(file)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
 @app.route('/account_register', methods=['POST'])
 def check_username():
-    username = request.form["username"]
-    password = request.form["password"]
-    password2 = request.form["password2"]
+    username = escape(request.form["username"])
+    password = escape(request.form["password"])
+    password2 = escape(request.form["password2"])
     #validate passwords match
     if password != password2:
         response = make_response()
         response.headers["location"] = "/templates/register.html"
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.status = 302
         return response
@@ -57,11 +61,13 @@ def check_username():
     if status == False:
         response = make_response()
         response.headers["location"] = "/templates/register.html"
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.status = 302
         return response
     response = make_response()
     response.headers["location"] = "/templates/login.html"
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.status = 302
     return response
@@ -86,6 +92,7 @@ def show_account():
     else:
         file = render_template('account.html', error=error,USER=username)
     response = make_response(file)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
@@ -107,6 +114,7 @@ def log_out():
 def serve_user():
     file = render_template("account_info.html")
     response = make_response(file)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 #this is the end point reached when the user presses enter after entering data
@@ -129,8 +137,8 @@ def user_info():
 @app.route("/account_login",methods = ["POST"])
 def validate_user():
     error = None
-    username = request.form["username"]
-    password = request.form["password"]
+    username = escape(request.form["username"])
+    password = escape(request.form["password"])
     token = log_in(username,password)
     if token != -1:
         response = make_response()

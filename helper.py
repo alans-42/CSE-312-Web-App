@@ -1,14 +1,16 @@
+import bcrypt, secrets, hashlib, json
 from pymongo import MongoClient
-import re
-import bcrypt
-import secrets
-import hashlib
+from html import escape
 
 mongo_client = MongoClient("mongo")
 data_base = mongo_client["loopie_boop"]
 user_data = data_base["users"]
 token_data = data_base["token"]
 user_info = data_base["user_info"]
+posts = data_base["posts"]
+ids = data_base["post_ids"]
+if ids.find_one({"type": "post"}) == None:
+    ids.insert_one({"type": "post", "id": 0}) 
 
 # adds salted+hashed verison of password ot database alogn with user name
 def sign_up(username,password):
@@ -93,3 +95,36 @@ def get_account_info(username):
 
 
     
+def POST_posts(user, data):
+    data = json.loads(data.decode())
+    postId = ids.find_one({'type': 'post'})
+    username = user["username"]
+    postData = escape(data['post'])
+    time = data['time_posted']
+    post = {'username': username, 'post': postData, 'time': time, 'postId': postId['id'], 'likes': 0, 'comments': []}
+    ids.update_one({'id': postId['id']}, {'$set': {'id': postId['id']+1}})
+
+    posts.insert_one(post)
+
+def GET_posts():
+    allPosts = posts.find({})
+    data = []
+    for post in allPosts:
+        del post['_id']
+        data.append(post)
+
+    return data
+
+def POST_comment(user, data):
+    data = json.loads(data.decode())
+    username = user['username']
+    commentData = escape(data['comment'])
+    postId = data['post_id']
+    post = posts.find_one({'postId': postId})
+
+    comment = {'username': username, 'comment': commentData, 'commentId': len(post['comments'])+1}
+    newComments = post['comments']
+    newComments.append(comment)
+    posts.update_one({'postId': postId}, {'$set': {'comments': newComments}})
+    
+    post = posts.find_one({'postId': postId})

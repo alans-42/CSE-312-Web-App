@@ -93,3 +93,9 @@ function show_pass(){
         type_txt2.type = "password";
     }
 }
+// This funtion is to clear search bar
+function clear(){
+  const chatTextBox = document.getElementById("food-text-box");
+  chatTextBox.value = "";
+}
+// hi

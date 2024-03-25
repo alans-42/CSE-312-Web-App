@@ -1,0 +1,38 @@
+<html lang="en">
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class = "background">
+<div class="Calories">Calories
+    <br></br>
+    <div class="food">
+        <div class ="Titl">{{Time_of_Day}} Food</div>&nbsp;&nbsp;
+        <div class="food-form">
+            <button id = "food-but" class = "input-button" onclick="clear()">&#10005</button>
+            <label>
+                <input id="food-text-box" type="text" placeholder="Search Food Here..."/>
+            </label>
+            &nbsp;
+            <button id="food-button" class = "input-button" onclick="sendChat()">&#x1F50D</button>
+        </div>&nbsp;&nbsp;
+        <div class ="Par">Results:</div>
+        <div class = "row">
+            <div class = "column">
+                <div id="food-messages"></div>
+            </div>
+            <div class = "column">
+                <div id="food-results"></div>
+            </div>
+        </div> 
+    </div>
+</div>
+<script src="/functions.js"></script>
+</body>
+</html>
+<!--<form action="/calorie" method="post" enctype="application/x-www-form-urlencoded">
+    <label>Search Here:&nbsp;
+    <input type ="text" id = "food_id" name = "food_name" placeholder="Food...">
+    </label>
+    <input type="submit" value="Click">
+</form>-->

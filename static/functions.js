@@ -98,3 +98,4 @@ function clear(){
   const chatTextBox = document.getElementById("food-text-box");
   chatTextBox.value = "";
 }
+// hi

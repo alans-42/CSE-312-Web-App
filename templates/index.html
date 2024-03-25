@@ -2,13 +2,11 @@
 <html lang="en">
     <head>
         <title>Generic Fitness App</title>
-         <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href="/public/style.css">
     </head>
 
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="" href="/static/style.css">
-
-    <body class="background">
+    <body class="background" onload="refresh()"> 
         <div class="header" style="height: 120px;">
             <a class="welcome">Welcome {{USER}}</a>
             <span class="nav-button" onclick="openNav()">&#9783;</span>
@@ -19,25 +17,28 @@
             <a href="/">Home</a>
             <a href="/templates/register.html">Account</a>
             <a href="#">Weekly<br>Calender</a>
-            <a href="/templates/Calories.html">Calories</a>
+            <a href="/templates/calories.html">Calories</a>
             <a href="#">Pictures</a>
+            <a href="/templates/share.html">Share</a>
         </div>
 
-        <div style="text-align: center; font-size: 100px;">
+        <div style="text-align: center; font-size: 50px;">
             <p>DAILY QUOTE</p>
         </div>
 
         <div class="row">
             <div class="column">
                 <div class="circle"></div>
+                <div class="square"></div>
             </div>
             <div class="column">
-                <div class="square"></div>
+                <div id="forum"></div><br>
+                <label style="font-size: 20px; color: black; text-decoration: none;">Share With Others!
+                    <a href="/templates/share.html"><button style="background-color: black; color: white; width: 50px; height: 30px;">Go</button></a>
+                </label>
             </div>
         </div>
 
-        <img src="/static/muscle.jpeg">
-
-        <script src="/static/functions.js"></script>
+        <script src="/public/functions.js"></script>
     </body>
 </html>

@@ -225,7 +225,7 @@ const quotes = [
   { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
   { text: "Big arm is my dream but not anymore.you feel me.", author: "Junpeng" },
   { text: "I GOT 99 PROBLEMS, BUT I'M GOING TO THE GYM TO IGNORE ALL OF THEM..", author: "UNKNOWN" },
-  { text: "I am the king of the king at the gym!!!!!", author: "Alan" },
+  { text: "It's not a good day until you had a good run!", author: "Alan" },
   { text: "I am the king of the king at the gym!!!!!", author: "Cayden" },
   { text: "I am the king of the king at the gym!!!!!", author: "Luke" },
   { text: "I am the king of the king at the gym!!!!! Work out with me", author: "Darius" },

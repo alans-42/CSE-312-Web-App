@@ -2,8 +2,12 @@ from flask import Flask, send_file, make_response, render_template, request
 from helper import *
 from html import escape
 import math, mimetypes, sys
+from werkzeug.utils import secure_filename
+import os
+import uuid
+from flask import send_from_directory
 app = Flask(__name__)
-
+#app.config['UPLOAD_FOLDER'] = '/root/uploads'
 @app.route('/', methods=['GET'])
 def index():
     error = None
@@ -25,7 +29,7 @@ def send_static_files(path):
     mimeType = mimetypes.guess_type(path)
     response = make_response(send_file('public/' + path, mimetype=mimeType[0]))
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    
+
     return response
 
 @app.route('/templates/<path:path>', methods=['GET'])
@@ -81,23 +85,30 @@ def show_account():
         user = check_token(cook)
         if user:
             username = user["username"]
+
     account_info = get_account_info(username)
+    user_document = user_data.find_one({"username": username})
+
     if account_info != -1:
         height = int(account_info["height_inches"])
         feet = math.floor(height / 12)
         inches = height - (feet * 12)
         str_height = str(feet) + " feet and " + str(inches) + " inches"
-        file = render_template('account.html', error=error,USER=username,name=account_info["fullname"],Gender=account_info["gender"],
+        profile_pic = user_document.get('profile_pic', 'default.jpg')
+        print(profile_pic)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@")
+        file = render_template('account.html',profile_pic=profile_pic, error=error,USER=username,name=account_info["fullname"],Gender=account_info["gender"],
                                age=account_info["age"],weight=account_info["weight"],height = str_height)
     else:
-        file = render_template('account.html', error=error,USER=username)
+        profile_pic=user_document.get('profile_pic', 'default.jpg')
+        file = render_template('account.html',profile_pic=profile_pic, error=error,USER=username)
     response = make_response(file)
     response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
-#logout endpoint 
-@app.route("/logout_user", methods = ["POST"]) 
+#logout endpoint
+@app.route("/logout_user", methods = ["POST"])
 def log_out():
     cook = request.cookies.get("auth_toke",-1)
     response = make_response()
@@ -188,6 +199,35 @@ def makeComment():
         response.status = 403
 
     return response
+
+@app.route('/upload-profile-picture', methods=['POST'])
+def upload_profile_picture():
+    if 'profile_picture' not in request.files:
+        return 'No file part', 400
+    file = request.files['profile_picture']
+    if file.filename == '':
+        return 'No selected file', 400
+    unique_filename = str(uuid.uuid4()) + "_" + secure_filename(file.filename)
+    file_path = os.path.join('/root/uploads', unique_filename)
+    file.save(file_path)
+
+    token = request.cookies.get("auth_toke", -1)
+    username = get_username_from_token(token)
+    if username:
+        user_data.update_one({"username": username}, {"$set": {"profile_pic": unique_filename}}, upsert=True)
+    else:
+        return 'Unauthorized', 401
+
+    response = make_response()
+    response.headers["location"] = "/account_user"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.status = 302
+    return response
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('/root/uploads', filename)
+
 
 
 if __name__ == "__main__":

@@ -128,3 +128,14 @@ def POST_comment(user, data):
     posts.update_one({'postId': postId}, {'$set': {'comments': newComments}})
     
     post = posts.find_one({'postId': postId})
+
+
+def get_username_from_token(auth_token):
+    auth_token = auth_token.encode()
+    hasher = hashlib.sha256()
+    hasher.update(auth_token)
+    auth_token = hasher.digest()
+    user_token_dict = token_data.find_one({"token": auth_token}, {"_id": 0})
+    if user_token_dict:
+        return user_token_dict["username"]
+    return None

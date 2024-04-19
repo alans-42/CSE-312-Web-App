@@ -33,7 +33,7 @@
             <button style="margin-left: 20px; background-color: black; color: white; width: 50px; height: 30px;" id="forum-button">Post</button>
         </label>
         <script>
-            const socket = io();
+            const socket = io.connect({transports: ['websocket']});
             socket.on('my response', function(incoming_full){
                 for (incoming of incoming_full){
                     var payload = incoming.data
@@ -42,7 +42,7 @@
                     var time = 2;
                     forum.innerHTML += "<br><div class='forum-box' id='box_" + payload.postId + "'>" + 
                             "<span id=message_" + payload.postId + " style='font-size: 20px'>" + 
-                                payload.username +": " + payload.msg + "<br>" + 
+                                username +": " + payload.msg + "<br>" + 
                                 "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
                                 // "<button id='like-button' onclick='likeMsg()'>Like</button> <a style='font-size: 12px'>Likes: " + likes + "</a></a>" +  
                                 "<button onclick='comment(" +payload.postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +

@@ -92,7 +92,7 @@ function comment(postId){
 
 function makePost(post){
     var forum = document.getElementById("forum");
-    var username = post['username'];
+    var username = "GUEST";
     var forumData = post['post'];
     var time = post['time'];
     // var likes = post['likes'];
@@ -220,3 +220,4 @@ function clear(){
   chatTextBox.value = "";
 }
 // hi
+

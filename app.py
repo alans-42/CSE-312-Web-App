@@ -1,8 +1,26 @@
 from flask import Flask, send_file, make_response, render_template, request
+from flask_socketio import SocketIO, emit
 from helper import *
 from html import escape
 import math, mimetypes, sys
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+username = "bob"
+
+@socketio.on('my post')
+def sock_data(message):
+    my_id = post_id()
+    post = {'data':message,'postId':my_id,'likes': 0, 'comments': []}
+    post_save(post)
+    emit('my response',[{'data':message,'postId':my_id,'likes': 0, 'comments': []}],broadcast=True)
+
+@socketio.on('connect')
+def show_logs():
+    posts = GET_posts()
+    emit('my response',posts)
+
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -193,5 +211,4 @@ def makeComment():
 if __name__ == "__main__":
     host = '0.0.0.0'
     port = 8080
-
-    app.run(debug=True, host=host, port=port)
+    socketio.run(app,debug=True, host=host, port=port, allow_unsafe_werkzeug=True)

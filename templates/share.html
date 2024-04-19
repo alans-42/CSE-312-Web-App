@@ -3,10 +3,13 @@
     <head>
         <title>Generic Fitness App</title>
         <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
     </head>
 
     <link rel="stylesheet" href="/public/style.css">
     <link rel="" href="/public/style.css">
+
+
 
     <body class="background" onload="refresh()"> 
         <div class="header" style="height: 120px;">
@@ -27,8 +30,33 @@
         <div id="forum" style="margin: 20px"></div><br>
         <label style="margin-left: 20px; font-size: 20px; color: black;">Share:<br>
             <textarea id="forum-input" name="forum-input" rows="4" cols="50" maxlength="200" style="resize: none; margin-left: 20px"></textarea><br>
-            <button style="margin-left: 20px; background-color: black; color: white; width: 50px; height: 30px;" id="forum-button" onclick="sendPost()">Post</button>
+            <button style="margin-left: 20px; background-color: black; color: white; width: 50px; height: 30px;" id="forum-button">Post</button>
         </label>
+        <script>
+            const socket = io();
+            socket.on('my response', function(incoming_full){
+                for (incoming of incoming_full){
+                    var payload = incoming.data
+                    var forum = document.getElementById("forum");
+                    var username = "GUEST";
+                    var time = 2;
+                    forum.innerHTML += "<br><div class='forum-box' id='box_" + payload.postId + "'>" + 
+                            "<span id=message_" + payload.postId + " style='font-size: 20px'>" + 
+                                payload.username +": " + payload.msg + "<br>" + 
+                                "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
+                                // "<button id='like-button' onclick='likeMsg()'>Like</button> <a style='font-size: 12px'>Likes: " + likes + "</a></a>" +  
+                                "<button onclick='comment(" +payload.postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +
+                            "</span></div>";
+                }
+            })
+            document.getElementById("forum-button").onclick = test =>{
+                var forumInput = document.getElementById("forum-input");
+                var forumData = forumInput.value;
+                socket.emit('my post',{'msg':forumData});
+                forumInput.value = "";
+            };
+            
+        </script>
 
         <script src="/public/functions.js"></script>
     </body>

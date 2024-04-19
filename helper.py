@@ -93,7 +93,14 @@ def get_account_info(username):
     else:
         return -1
 
+def post_id():
+    id_dict = ids.find_one({'type': 'post'})
+    my_id = id_dict["id"]
+    ids.update_one({'id': my_id}, {'$set': {'id': my_id+1}})
+    return my_id
 
+def post_save(dict1):
+    posts.insert_one(dict1)
     
 def POST_posts(user, data):
     data = json.loads(data.decode())
@@ -103,16 +110,13 @@ def POST_posts(user, data):
     time = data['time_posted']
     post = {'username': username, 'post': postData, 'time': time, 'postId': postId['id'], 'likes': 0, 'comments': []}
     ids.update_one({'id': postId['id']}, {'$set': {'id': postId['id']+1}})
-
     posts.insert_one(post)
 
 def GET_posts():
-    allPosts = posts.find({})
+    allPosts = posts.find({},{'_id':0})
     data = []
     for post in allPosts:
-        del post['_id']
         data.append(post)
-
     return data
 
 def POST_comment(user, data):

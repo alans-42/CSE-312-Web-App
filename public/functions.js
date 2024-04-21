@@ -95,10 +95,12 @@ function makePost(post){
     var username = post['username'];
     var forumData = post['post'];
     var time = post['time'];
+    var pic = post['pic'];
     // var likes = post['likes'];
     var postId = post['postId'];
     forum.innerHTML += "<br><div class='forum-box' id='box_" + postId + "'>" + 
                         "<span id=message_" + postId + " style='font-size: 20px'>" + 
+                            "<div style='float:left; padding-right: 8px'><img src='/uploads/" + pic + "' width='100%' height='69px' style='border:1px solid black'></div>" +
                             username +": " + forumData + "<br>" + 
                             "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
                             // "<button id='like-button' onclick='likeMsg()'>Like</button> <a style='font-size: 12px'>Likes: " + likes + "</a></a>" +  
@@ -222,13 +224,11 @@ function clear(){
 
 // Quote Functionality
 const quotes = [
-  { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
-  { text: "Big arm is my dream but not anymore.you feel me.", author: "Junpeng" },
-  { text: "I GOT 99 PROBLEMS, BUT I'M GOING TO THE GYM TO IGNORE ALL OF THEM..", author: "UNKNOWN" },
+  { text: "Big arm is my dream but not anymore. You feel me.", author: "Junpeng" },
   { text: "It's not a good day until you had a good run!", author: "Alan" },
-  { text: "I am the king of the king at the gym!!!!!", author: "Cayden" },
-  { text: "I am the king of the king at the gym!!!!!", author: "Luke" },
-  { text: "I am the king of the king at the gym!!!!! Work out with me", author: "Darius" },
+  { text: "PLACEHOLDER", author: "Cayden" },
+  { text: "PLACEHOLDER", author: "Luke" },
+  { text: "PLACEHOLDER", author: "Darius" },
   { text: "The only limit to the height of your achievements is the reach of your dreams and your willingness to work for them", author: "Michelle Obama" }
 ];
 

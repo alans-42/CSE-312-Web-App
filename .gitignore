@@ -1,2 +1,4 @@
 __pycache__/
 .idea/
+uploads/
+.DS_Store

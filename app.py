@@ -1,11 +1,9 @@
-from flask import Flask, send_file, make_response, render_template, request
+from flask import Flask, send_file, make_response, render_template, request, send_from_directory
 from helper import *
 from html import escape
-import math, mimetypes, sys
+import math, mimetypes, sys, os, uuid
 from werkzeug.utils import secure_filename
-import os
-import uuid
-from flask import send_from_directory
+
 app = Flask(__name__)
 #app.config['UPLOAD_FOLDER'] = '/root/uploads'
 @app.route('/', methods=['GET'])
@@ -95,8 +93,6 @@ def show_account():
         inches = height - (feet * 12)
         str_height = str(feet) + " feet and " + str(inches) + " inches"
         profile_pic = user_document.get('profile_pic', 'default.jpg')
-        print(profile_pic)
-        print("@@@@@@@@@@@@@@@@@@@@@@@@")
         file = render_template('account.html',profile_pic=profile_pic, error=error,USER=username,name=account_info["fullname"],Gender=account_info["gender"],
                                age=account_info["age"],weight=account_info["weight"],height = str_height)
     else:
@@ -212,9 +208,9 @@ def upload_profile_picture():
     file.save(file_path)
 
     token = request.cookies.get("auth_toke", -1)
-    username = get_username_from_token(token)
-    if username:
-        user_data.update_one({"username": username}, {"$set": {"profile_pic": unique_filename}}, upsert=True)
+    userdata = check_token(token)
+    if userdata:
+        user_data.update_one({"username": userdata["username"]}, {"$set": {"profile_pic": unique_filename}}, upsert=True)
     else:
         return 'Unauthorized', 401
 
@@ -227,8 +223,6 @@ def upload_profile_picture():
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory('/root/uploads', filename)
-
-
 
 if __name__ == "__main__":
     host = '0.0.0.0'

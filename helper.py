@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from html import escape
 
 mongo_client = MongoClient("mongo")
-data_base = mongo_client["loopie_boop"]
+data_base = mongo_client["lopie_boop"]
 user_data = data_base["users"]
 token_data = data_base["token"]
 user_info = data_base["user_info"]
@@ -101,7 +101,8 @@ def POST_posts(user, data):
     username = user["username"]
     postData = escape(data['post'])
     time = data['time_posted']
-    post = {'username': username, 'post': postData, 'time': time, 'postId': postId['id'], 'likes': 0, 'comments': []}
+    profile_pic = user.get('profile_pic', 'default.jpg')
+    post = {'username': username, 'post': postData, 'time': time, 'postId': postId['id'], 'pic': profile_pic, 'likes': 0, 'comments': []}
     ids.update_one({'id': postId['id']}, {'$set': {'id': postId['id']+1}})
 
     posts.insert_one(post)
@@ -128,14 +129,3 @@ def POST_comment(user, data):
     posts.update_one({'postId': postId}, {'$set': {'comments': newComments}})
     
     post = posts.find_one({'postId': postId})
-
-
-def get_username_from_token(auth_token):
-    auth_token = auth_token.encode()
-    hasher = hashlib.sha256()
-    hasher.update(auth_token)
-    auth_token = hasher.digest()
-    user_token_dict = token_data.find_one({"token": auth_token}, {"_id": 0})
-    if user_token_dict:
-        return user_token_dict["username"]
-    return None

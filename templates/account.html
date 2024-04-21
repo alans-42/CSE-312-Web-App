@@ -20,42 +20,42 @@
             <a href="/templates/register.html">Account</a>
             <a href="#">Weekly<br>Calender</a>
             <a href="/templates/calories.html">Calories</a>
-            <a href="#">Pictures</a>
             <a href="/templates/share.html">Share</a>
         </div>
-<div class="row">
+
+        <div class="row">
             <div class="column">
-        <script src="/public/functions.js"></script>
-        <br> 
-        <p style ="font-size:25px; margin-left: 20px;">Name: {{name}}</p>
-        <br>
-        <p style ="font-size:25px; margin-left: 20px;">Gender: {{Gender}}</p>
-        <br>
-        <p style ="font-size:25px; margin-left: 20px;">Age: {{age}} years</p>
-        <br>
-        <p style ="font-size:25px; margin-left: 20px;">Weight: {{weight}} lbs</p>
-        <br>
-        <p style ="font-size:25px; margin-left: 20px;">Height: {{height}} </p>
+            <script src="/public/functions.js"></script>
+            <br> 
+            <p style ="font-size:25px; margin-left: 20px;">Name: {{name}}</p>
+            <br>
+            <p style ="font-size:25px; margin-left: 20px;">Gender: {{Gender}}</p>
+            <br>
+            <p style ="font-size:25px; margin-left: 20px;">Age: {{age}} years</p>
+            <br>
+            <p style ="font-size:25px; margin-left: 20px;">Weight: {{weight}} lbs</p>
+            <br>
+            <p style ="font-size:25px; margin-left: 20px;">Height: {{height}} </p>
 
-        <form action="/user_info_page" method="post" enctype="application/x-www-form-urlencoded">
-            <input type="submit" value="add my info" style="margin-left: 20px; margin-bottom: 20px; background-color: black; color: white; width: 100px; height: 30px;">
-        </form>
+            <form action="/user_info_page" method="post" enctype="application/x-www-form-urlencoded">
+                <input type="submit" value="add my info" style="margin-left: 20px; margin-bottom: 20px; background-color: black; color: white; width: 100px; height: 30px;">
+            </form>
 
-        <form action="/logout_user" method="post" enctype="application/x-www-form-urlencoded">
-            <input type="submit" value="LogOut" style="margin-left: 20px; margin-bottom: 20px; background-color: black; color: white; width: 100px; height: 30px;">
-        </form>
-</div>
+            <form action="/logout_user" method="post" enctype="application/x-www-form-urlencoded">
+                <input type="submit" value="LogOut" style="margin-left: 20px; margin-bottom: 20px; background-color: black; color: white; width: 100px; height: 30px;">
+            </form>
+        </div>
 <!--    Junpeng_upload_picture-->
         <div class="column">
 
-        <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" alt="Profile Picture" class="profile-pic">
+            <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" alt="Profile Picture" class="profile-pic" style="width: 50%;">
 
             <form action="/upload-profile-picture" method="post" enctype="multipart/form-data">
                 <input type="file" name="profile_picture" id="profile_picture">
                 <input type="submit" value="Upload">
             </form>
-             </div>
+            
         </div>
+
     </body>
-    
 </html>

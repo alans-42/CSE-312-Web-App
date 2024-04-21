@@ -1,6 +1,6 @@
 function refresh(){
   refreshPosts();
-  // setInterval(refreshPosts, 5000);
+  updateQuote();
 }
 
 function openNav(){
@@ -219,5 +219,31 @@ function clear(){
   const chatTextBox = document.getElementById("food-text-box");
   chatTextBox.value = "";
 }
+
 // hi
+
+=======
+
+// Quote Functionality
+const quotes = [
+  { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
+  { text: "Big arm is my dream but not anymore.you feel me.", author: "Junpeng" },
+  { text: "I GOT 99 PROBLEMS, BUT I'M GOING TO THE GYM TO IGNORE ALL OF THEM..", author: "UNKNOWN" },
+  { text: "It's not a good day until you had a good run!", author: "Alan" },
+  { text: "I am the king of the king at the gym!!!!!", author: "Cayden" },
+  { text: "I am the king of the king at the gym!!!!!", author: "Luke" },
+  { text: "I am the king of the king at the gym!!!!! Work out with me", author: "Darius" },
+  { text: "The only limit to the height of your achievements is the reach of your dreams and your willingness to work for them", author: "Michelle Obama" }
+];
+
+function getRandomQuote() {
+  const index = Math.floor(Math.random() * quotes.length);
+  return quotes[index];
+}
+
+function updateQuote() {
+  const dailyQuote = getRandomQuote();
+  document.getElementById("quote-text").textContent = `"${dailyQuote.text}"`;
+  document.getElementById("quote-author").textContent = `- ${dailyQuote.author}`;
+}
 

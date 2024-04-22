@@ -1,31 +1,29 @@
-from flask import Flask, send_file, make_response, render_template, request
+from flask import Flask, send_file, make_response, render_template, request, send_from_directory
 from flask_socketio import SocketIO, emit
 from helper import *
 from html import escape
-import math, mimetypes, sys
+import math, mimetypes, sys, os, uuid
 from werkzeug.utils import secure_filename
-import os
-import uuid
-from flask import send_from_directory
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-
-
 @socketio.on('my post')
 def sock_data(message):
-    print(request.cookies,file=sys.stderr)
-    auth_toke = request.cookies.get("auth_toke")
+    # print(request.cookies,file=sys.stderr)
+    auth_toke = request.cookies.get("auth_toke", -1)
+    pic = 'default.jpg'
     username = "Guest"
     if auth_toke != -1:
         user = check_token(auth_toke)
         if user:
             username = user["username"]
+            pic = user.get('profile_pic', 'default.jpg')
     my_id = post_id()
-    post = {'post':escape(message["post"]),'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"]}
+    post = {'post':escape(message["post"]), 'postId':my_id, 'likes': 0, 'comments': [], "username":username, "time":message["time_posted"], "pic": pic}
     post_save(post)
-    emit('my response',[{'post':message["post"],'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"]}],broadcast=True)
+    emit('my response',[{'post':message["post"],'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"], "pic":pic}],broadcast=True)
 
 
 @socketio.on('connect')
@@ -35,7 +33,7 @@ def connect():
 
 @socketio.on('my comment')
 def show_comment(comment):
-    auth_toke = request.cookies.get("auth_toke")
+    auth_toke = request.cookies.get("auth_toke", -1)
     username = "Guest"
     if auth_toke != -1:
         user = check_token(auth_toke)
@@ -43,11 +41,8 @@ def show_comment(comment):
             username = user["username"]
     save_comment({'username':username,'post_id':comment['post_id'],'commentData':escape(comment['comment'])})
     comment_dict = {'username': username, 'comment': escape(comment['comment']), 'commentId': len(comment['comment'])+1,"post_id":comment["post_id"]}
-    emit('comment response',comment_dict)
+    emit('comment response',comment_dict, broadcast=True)
 
-
-
-#app.config['UPLOAD_FOLDER'] = '/root/uploads'
 @app.route('/', methods=['GET'])
 def index():
     error = None
@@ -61,7 +56,6 @@ def index():
     response = make_response(file)
     response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    print("Hey", file=sys.stderr)
     return response
 
 @app.route('/public/<path:path>', methods=['GET'])
@@ -135,8 +129,6 @@ def show_account():
         inches = height - (feet * 12)
         str_height = str(feet) + " feet and " + str(inches) + " inches"
         profile_pic = user_document.get('profile_pic', 'default.jpg')
-        print(profile_pic)
-        print("@@@@@@@@@@@@@@@@@@@@@@@@")
         file = render_template('account.html',profile_pic=profile_pic, error=error,USER=username,name=account_info["fullname"],Gender=account_info["gender"],
                                age=account_info["age"],weight=account_info["weight"],height = str_height)
     else:
@@ -252,9 +244,9 @@ def upload_profile_picture():
     file.save(file_path)
 
     token = request.cookies.get("auth_toke", -1)
-    username = get_username_from_token(token)
-    if username:
-        user_data.update_one({"username": username}, {"$set": {"profile_pic": unique_filename}}, upsert=True)
+    userdata = check_token(token)
+    if userdata:
+        user_data.update_one({"username": userdata["username"]}, {"$set": {"profile_pic": unique_filename}}, upsert=True)
     else:
         return 'Unauthorized', 401
 
@@ -268,9 +260,7 @@ def upload_profile_picture():
 def uploaded_file(filename):
     return send_from_directory('/root/uploads', filename)
 
-
-
 if __name__ == "__main__":
     host = '0.0.0.0'
-    port = 8080
+    port = 9091
     socketio.run(app,debug=True, host=host, port=port, allow_unsafe_werkzeug=True)

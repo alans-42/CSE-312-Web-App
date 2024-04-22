@@ -18,15 +18,14 @@ function noButton() {
   var start = document.getElementById("start");
   var start2 = document.getElementById("start2");
   const timer = document.getElementById('timer');
+  start2.classList.toggle('poof');
   setTimeout(() => {
     back.classList.toggle('fade-out');
     start.classList.toggle('fade-out');
-    start2.classList.toggle('fade-out');
   }, 1000);
   setTimeout(() => {
     back.classList.toggle('poof');
     start.classList.toggle('poof');
-    start2.classList.toggle('poof');
   }, 3000);
   setTimeout(() => {
     timer.classList.toggle('fade-in');

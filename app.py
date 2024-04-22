@@ -124,7 +124,10 @@ def show_account():
     user_document = user_data.find_one({"username": username})
 
     if account_info != -1:
-        height = int(account_info["height_inches"])
+        if account_info["height_inches"].isnumeric():
+            height = int(account_info["height_inches"])
+        else:
+            height = 0
         feet = math.floor(height / 12)
         inches = height - (feet * 12)
         str_height = str(feet) + " feet and " + str(inches) + " inches"

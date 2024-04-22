@@ -235,9 +235,9 @@ function clear(){
 const quotes = [
   { text: "Big arm is my dream but not anymore. You feel me.", author: "Junpeng" },
   { text: "It's not a good day until you had a good run!", author: "Alan" },
-  { text: "PLACEHOLDER", author: "Cayden" },
+  { text: "Subsribe to Clinq on YT", author: "Cayden" },
   { text: "No matter how hard things get, you can always count on your teammates.", author: "Luke" },
-  { text: "PLACEHOLDER", author: "Darius" },
+  { text: "To be or Not to be, that is the question!", author: "Darius" },
   { text: "The only limit to the height of your achievements is the reach of your dreams and your willingness to work for them", author: "Michelle Obama" }
 ];
 

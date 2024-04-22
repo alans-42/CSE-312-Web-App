@@ -1,4 +1,5 @@
 from flask import Flask, send_file, make_response, render_template, request
+from flask_socketio import SocketIO, emit
 from helper import *
 from html import escape
 import math, mimetypes, sys
@@ -7,6 +8,45 @@ import os
 import uuid
 from flask import send_from_directory
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+
+
+
+@socketio.on('my post')
+def sock_data(message):
+    print(request.cookies,file=sys.stderr)
+    auth_toke = request.cookies.get("auth_toke")
+    username = "Guest"
+    if auth_toke != -1:
+        user = check_token(auth_toke)
+        if user:
+            username = user["username"]
+    my_id = post_id()
+    post = {'post':escape(message["post"]),'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"]}
+    post_save(post)
+    emit('my response',[{'post':message["post"],'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"]}],broadcast=True)
+
+
+@socketio.on('connect')
+def connect():
+    posts = GET_posts()
+    emit('my response',posts)
+
+@socketio.on('my comment')
+def show_comment(comment):
+    auth_toke = request.cookies.get("auth_toke")
+    username = "Guest"
+    if auth_toke != -1:
+        user = check_token(auth_toke)
+        if user:
+            username = user["username"]
+    save_comment({'username':username,'post_id':comment['post_id'],'commentData':escape(comment['comment'])})
+    comment_dict = {'username': username, 'comment': escape(comment['comment']), 'commentId': len(comment['comment'])+1,"post_id":comment["post_id"]}
+    emit('comment response',comment_dict)
+
+
+
 #app.config['UPLOAD_FOLDER'] = '/root/uploads'
 @app.route('/', methods=['GET'])
 def index():
@@ -233,5 +273,4 @@ def uploaded_file(filename):
 if __name__ == "__main__":
     host = '0.0.0.0'
     port = 8080
-
-    app.run(debug=True, host=host, port=port)
+    socketio.run(app,debug=True, host=host, port=port, allow_unsafe_werkzeug=True)

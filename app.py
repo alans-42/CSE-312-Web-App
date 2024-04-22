@@ -23,7 +23,7 @@ def sock_data(message):
     my_id = post_id()
     post = {'post':escape(message["post"]), 'postId':my_id, 'likes': 0, 'comments': [], "username":username, "time":message["time_posted"], "pic": pic}
     post_save(post)
-    emit('my response',[{'post':message["post"],'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"], "pic":pic}],broadcast=True)
+    emit('my response',[{'post':escape(message["post"]),'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"], "pic":pic}],broadcast=True)
 
 
 @socketio.on('connect')

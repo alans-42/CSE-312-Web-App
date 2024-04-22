@@ -132,7 +132,15 @@ def POST_comment(user, data):
     posts.update_one({'postId': postId}, {'$set': {'comments': newComments}})
     
     post = posts.find_one({'postId': postId})
-
+def save_comment(data):
+    username = data['username']
+    commentData = data['commentData']
+    postId = data['post_id']
+    post = posts.find_one({'postId': postId})
+    newConnects = post['comments']
+    comment = {'username': username, 'comment': commentData, 'commentId': len(post['comments'])+1}
+    newConnects.append(comment)
+    posts.update_one({'postId': postId}, {'$set': {'comments': newConnects}})
 
 def get_username_from_token(auth_token):
     auth_token = auth_token.encode()

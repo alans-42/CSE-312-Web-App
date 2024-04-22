@@ -67,23 +67,28 @@ function postComment(commentData, postId){
 
 function sendComment(postId){
   var comment = document.getElementById('comment_' + postId);
-
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-          console.log(this.response);
-      }
-  }
+  var boxer = document.getElementById('comment_box_' + postId);
+  boxer.hidden = true;
+  // var request = new XMLHttpRequest();
+  // request.onreadystatechange = function () {
+  //     if (this.readyState === 4 && this.status === 200) {
+  //         console.log(this.response);
+  //     }
+  // }
   var commentJSON = {"comment": comment.value, "post_id": postId};
-  request.open("POST", "/send-comment");
-  request.send(JSON.stringify(commentJSON));
-  setTimeout(refreshPosts, 100);
+  // request.open("POST", "/send-comment");
+  // request.send(JSON.stringify(commentJSON));
+  // setTimeout(refreshPosts, 100);
+  socket.emit('my comment',commentJSON);
+  document.getElementById("button_" + postId).hidden = false;
+
 }
 
 function comment(postId){
+  document.getElementById("button_" + postId).hidden = true;
   var forum = document.getElementById("box_" + postId);
   commentField = "<div class='comment-box' id='comment_box_" + postId +"'>" + 
-                  "Comment: <input id='comment_" + postId + "' type='text' maxlength='100' size='50'></input>" +
+                  "Comment: <input id='comment_" + postId + "' type='text'  maxlength='100' size='50'></input>" +
                   "<button onclick='sendComment(" + postId + ")'>Post</button></div>";
 
   forum.outerHTML += commentField
@@ -92,7 +97,7 @@ function comment(postId){
 
 function makePost(post){
     var forum = document.getElementById("forum");
-    var username = "GUEST";
+    var username = post['username']
     var forumData = post['post'];
     var time = post['time'];
     // var likes = post['likes'];
@@ -102,7 +107,7 @@ function makePost(post){
                             username +": " + forumData + "<br>" + 
                             "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
                             // "<button id='like-button' onclick='likeMsg()'>Like</button> <a style='font-size: 12px'>Likes: " + likes + "</a></a>" +  
-                            "<button onclick='comment(" + postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +
+                            "<button id= 'button_" + postId + "' onclick='comment(" + postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +
                         "</span></div>";
     // hsghcvevcghevcghvegrhgehjgjegejwhgrhjgewhjrgewhjgrhjewgrjhgewjhrgewhjgrhjewgrjhgewhjrgejwhgrhjwegrhjgewhjrgdshjgfhjgdshjfgdshjfghjdsgfhjdsgfhjsgfhjgsdhjfgjhdsgfhjdsghjfgdsjhfgjdshfjhfhhvjhhvjskahfjkgs
     forum.scrollIntoView(false);
@@ -115,16 +120,17 @@ function sendPost(){
   var time = getTime();
   forumInput.value = "";
 
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-          console.log(this.response);
-      }
-  }
+  // var request = new XMLHttpRequest();
+  // request.onreadystatechange = function () {
+  //     if (this.readyState === 4 && this.status === 200) {
+  //         console.log(this.response);
+  //     }
+  // }
   var postJSON = {"post": forumData, "time_posted": time};
-  request.open("POST", "/send-post");
-  request.send(JSON.stringify(postJSON));
-  setTimeout(refreshPosts, 100);
+  return postJSON;
+  // request.open("POST", "/send-post");
+  // request.send(JSON.stringify(postJSON));
+  // setTimeout(refreshPosts, 100);
 }
 
 function submit_username(){
@@ -222,7 +228,6 @@ function clear(){
 
 // hi
 
-=======
 
 // Quote Functionality
 const quotes = [

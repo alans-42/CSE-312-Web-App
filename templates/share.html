@@ -4,6 +4,7 @@
         <title>Generic Fitness App</title>
         <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+        <script src="/public/functions.js" type="text/javascript"></script>
     </head>
 
     <link rel="stylesheet" href="/public/style.css">
@@ -11,7 +12,7 @@
 
 
 
-    <body class="background" onload="refresh()"> 
+    <body class="background" > 
         <div class="header" style="height: 120px;">
             <a class="welcome">Share</a>
             <span class="nav-button" onclick="openNav()">&#9783;</span>
@@ -36,28 +37,22 @@
             const socket = io.connect({transports: ['websocket']});
             socket.on('my response', function(incoming_full){
                 for (incoming of incoming_full){
-                    var payload = incoming.data
-                    var forum = document.getElementById("forum");
-                    var username = "GUEST";
-                    var time = 2;
-                    forum.innerHTML += "<br><div class='forum-box' id='box_" + payload.postId + "'>" + 
-                            "<span id=message_" + payload.postId + " style='font-size: 20px'>" + 
-                                username +": " + payload.msg + "<br>" + 
-                                "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
-                                // "<button id='like-button' onclick='likeMsg()'>Like</button> <a style='font-size: 12px'>Likes: " + likes + "</a></a>" +  
-                                "<button onclick='comment(" +payload.postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +
-                            "</span></div>";
+                    makePost(incoming);
+                    for (var comment of incoming.comments){
+                        postComment(comment,incoming.postId);
+                    }
+
                 }
             })
             document.getElementById("forum-button").onclick = test =>{
-                var forumInput = document.getElementById("forum-input");
-                var forumData = forumInput.value;
-                socket.emit('my post',{'msg':forumData});
-                forumInput.value = "";
-            };
+                var payload = sendPost();
+                socket.emit("my post",payload);
+            };socket.on('comment response',function(incoming_comment){
+                postComment(incoming_comment,incoming_comment.post_id);
+            })
             
         </script>
 
-        <script src="/public/functions.js"></script>
+        
     </body>
 </html>

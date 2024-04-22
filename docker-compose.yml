@@ -7,6 +7,6 @@ services:
     environment:
       WAIT_HOSTS: mongo:27017
     ports:
-      - '8080:9090'
+      - '9090:5000'
     volumes:
       - ./uploads:/root/uploads

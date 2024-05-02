@@ -4,6 +4,9 @@ from helper import *
 from html import escape
 import math, mimetypes, sys, os, uuid
 from werkzeug.utils import secure_filename
+from bson.json_util import dumps
+import json
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -263,7 +266,10 @@ def upload_profile_picture():
 def uploaded_file(filename):
     return send_from_directory('/root/uploads', filename)
 
+
+
+
 if __name__ == "__main__":
     host = '0.0.0.0'
-    port = 9091
+    port = 8080
     socketio.run(app,debug=True, host=host, port=port, allow_unsafe_werkzeug=True)

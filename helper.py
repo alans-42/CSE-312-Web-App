@@ -1,13 +1,6 @@
 import bcrypt, secrets, hashlib, json
 from pymongo import MongoClient
 from html import escape
-import datetime
-import threading
-import time
-from datetime import datetime
-
-
-from flask_socketio import SocketIO
 
 mongo_client = MongoClient("mongo")
 data_base = mongo_client["lopie_boop"]
@@ -16,8 +9,6 @@ token_data = data_base["token"]
 user_info = data_base["user_info"]
 posts = data_base["posts"]
 ids = data_base["post_ids"]
-scheduled_posts = data_base["scheduled_posts"]
-
 if ids.find_one({"type": "post"}) == None:
     ids.insert_one({"type": "post", "id": 0}) 
 
@@ -117,13 +108,10 @@ def POST_posts(user, data):
     username = user["username"]
     postData = escape(data['post'])
     time = data['time_posted']
-    # schedule_time = data.get('schedule_time')
     profile_pic = user.get('profile_pic', 'default.jpg')
     post = {'username': username, 'post': postData, 'time': time, 'postId': postId['id'], 'pic': profile_pic, 'likes': 0, 'comments': []}
     ids.update_one({'id': postId['id']}, {'$set': {'id': postId['id']+1}})
     posts.insert_one(post)
-
-
 
 def GET_posts():
     allPosts = posts.find({},{'_id':0})
@@ -155,4 +143,3 @@ def save_comment(data):
     comment = {'username': username, 'comment': commentData, 'commentId': len(post['comments'])+1}
     newConnects.append(comment)
     posts.update_one({'postId': postId}, {'$set': {'comments': newConnects}})
-

@@ -6,11 +6,36 @@ import math, mimetypes, sys, os, uuid
 from werkzeug.utils import secure_filename
 from bson.json_util import dumps
 import json
-
-
+from flask_limiter import Limiter
+from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_limiter.util import get_remote_address
+from flask import Blueprint
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+all_reqs = Blueprint("all_reqs", __name__, url_prefix = "/")
+# app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=["50 per 10 seconds"],
+    meta_limits=["1 per 30 seconds"]
+)
+limiter.limit(all_reqs)
+# @app.before_request
+# @limiter.limit("50 per 10 seconds")
+# def too_many_req():
+#     error = None
+#     username = ""
+#     file = render_template('index.html', error=error,USER=username)
+#     response = make_response(file)
+#     response.headers['Content-Type'] = 'text/html; charset=utf-8'
+#     response.headers['X-Content-Type-Options'] = 'nosniff'
+#     print("Hey", file=sys.stderr)
+#     return response
+
+
 
 @socketio.on('my post')
 def sock_data(message):

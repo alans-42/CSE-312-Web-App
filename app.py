@@ -13,20 +13,18 @@ from flask import Blueprint
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-all_reqs = Blueprint("all_reqs", __name__, url_prefix = "/")
-# app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+all_reqs = Blueprint("all_reqs", __name__)
 
-limiter = Limiter(
-    key_func=get_remote_address,
-    app=app,
-    default_limits=["50 per 10 seconds"],
-    meta_limits=["1 per 30 seconds"]
-)
+
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+
+limiter = Limiter(key_func=get_remote_address,app=app,meta_limits=["1 per 30 seconds"])
 
 
 
 
-limiter.limit(all_reqs,error_message='chill!')
+app_lim = limiter.shared_limit(limit_value ="50 per 10 seconds", scope="all_reqs",error_message="Too many requests, Try again soon!")
+
 
 
 @socketio.on('my post')
@@ -64,6 +62,7 @@ def show_comment(comment):
     emit('comment response',comment_dict, broadcast=True)
 
 @app.route('/', methods=['GET'])
+@app_lim
 def index():
     error = None
     username = ""
@@ -79,6 +78,7 @@ def index():
     return response
 
 @app.route('/public/<path:path>', methods=['GET'])
+@app_lim
 def send_static_files(path):
     mimeType = mimetypes.guess_type(path)
     response = make_response(send_file('public/' + path, mimetype=mimeType[0]))
@@ -87,6 +87,7 @@ def send_static_files(path):
     return response
 
 @app.route('/templates/<path:path>', methods=['GET'])
+@app_lim
 def send_templates(path):
     token = request.cookies.get("auth_toke",-1)
     if path == "register.html" and token != -1:
@@ -103,6 +104,7 @@ def send_templates(path):
     return response
 
 @app.route('/account_register', methods=['POST'])
+@app_lim
 def check_username():
     username = escape(request.form["username"])
     password = escape(request.form["password"])
@@ -131,6 +133,7 @@ def check_username():
     return response
 #this is the account page after successful login
 @app.route("/account_user", methods = ["GET"])
+@app_lim
 def show_account():
     error = None
     username = ""
@@ -164,6 +167,7 @@ def show_account():
 
 #logout endpoint
 @app.route("/logout_user", methods = ["POST"])
+@app_lim
 def log_out():
     cook = request.cookies.get("auth_toke",-1)
     response = make_response()
@@ -177,6 +181,7 @@ def log_out():
 
 #this is te endpoint to send the html form for user info
 @app.route("/user_info_page", methods = ["POST"])
+@app_lim
 def serve_user():
     file = render_template("account_info.html")
     response = make_response(file)
@@ -185,6 +190,7 @@ def serve_user():
     return response
 #this is the end point reached when the user presses enter after entering data
 @app.route("/user_info",methods = ["POST"])
+@app_lim
 def user_info():
     user_info_dict = {}
     user_info_dict["fullname"] = escape(request.form["user_fullname"])
@@ -201,6 +207,7 @@ def user_info():
     return response
 
 @app.route("/account_login",methods = ["POST"])
+@app_lim
 def validate_user():
     error = None
     username = escape(request.form["username"])
@@ -220,6 +227,7 @@ def validate_user():
     return response
 
 @app.route("/send-post", methods=['POST'])
+@app_lim
 def makeForumPost():
     response = make_response()
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -233,6 +241,7 @@ def makeForumPost():
     return response
 
 @app.route("/send-post", methods=['GET'])
+@app_lim
 def getForumPosts():
     response = make_response()
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -243,6 +252,7 @@ def getForumPosts():
     return response
 
 @app.route("/send-comment", methods=['POST'])
+@app_lim
 def makeComment():
     response = make_response()
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -256,6 +266,7 @@ def makeComment():
     return response
 
 @app.route('/upload-profile-picture', methods=['POST'])
+@app_lim
 def upload_profile_picture():
     if 'profile_picture' not in request.files:
         return 'No file part', 400
@@ -280,6 +291,7 @@ def upload_profile_picture():
     return response
 
 @app.route('/uploads/<filename>')
+@app_lim
 def uploaded_file(filename):
     return send_from_directory('/root/uploads', filename)
 

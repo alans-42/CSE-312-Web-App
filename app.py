@@ -22,19 +22,11 @@ limiter = Limiter(
     default_limits=["50 per 10 seconds"],
     meta_limits=["1 per 30 seconds"]
 )
-limiter.limit(all_reqs)
-# @app.before_request
-# @limiter.limit("50 per 10 seconds")
-# def too_many_req():
-#     error = None
-#     username = ""
-#     file = render_template('index.html', error=error,USER=username)
-#     response = make_response(file)
-#     response.headers['Content-Type'] = 'text/html; charset=utf-8'
-#     response.headers['X-Content-Type-Options'] = 'nosniff'
-#     print("Hey", file=sys.stderr)
-#     return response
 
+
+
+
+limiter.limit(all_reqs,error_message='chill!')
 
 
 @socketio.on('my post')

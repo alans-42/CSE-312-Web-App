@@ -25,12 +25,24 @@
             <a href="/templates/meditation.html">Meditation</a>
             <a href="/templates/share.html">Share</a>
         </div>
+<div id="scheduled-posts-area" style="margin: 20px;">
+    <h2>Scheduled Posts</h2>
+</div>
 
         <div id="forum" style="margin: 20px"></div><br>
         <label style="margin-left: 20px; font-size: 20px; color: black;">Share:<br>
             <textarea id="forum-input" name="forum-input" rows="4" cols="50" maxlength="200" style="resize: none; margin-left: 20px"></textarea><br>
             <button style="margin-left: 20px; background-color: black; color: white; width: 50px; height: 30px;" id="forum-button">Post</button>
         </label>
+
+        <label style="margin-left: 20px; font-size: 20px; color: black;">Schedule Post:<br>
+    <input type="datetime-local" id="schedule-time" name="schedule-time" style="margin-left: 20px;">
+</label><br>
+<button style="margin-left: 20px; background-color: grey; color: white; width: 100px; height: 30px;" id="schedule-button">Schedule</button>
+
+
+
+
         <script>
             const socket = io.connect({transports: ['websocket']});
             socket.on('my response', function(incoming_full){
@@ -51,6 +63,6 @@
             
         </script>
 
-        
+
     </body>
 </html>

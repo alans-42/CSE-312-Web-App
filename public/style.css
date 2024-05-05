@@ -184,6 +184,13 @@
 .fade-out {
     animation: fadeOut 2s forwards;
 }
+.cursor {
+    cursor: pointer;
+}
+.fade-out1 {
+    animation: fadeOut .1s forwards;
+    cursor: pointer;
+}
 .poof {
     display: none;
 }

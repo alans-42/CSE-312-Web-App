@@ -134,33 +134,52 @@ function sendPost(){
   // request.send(JSON.stringify(postJSON));
   // setTimeout(refreshPosts, 100);
 }
+
 function delayPost(){
-  var timeInput = document.getElementById("schedule-input");
-  var textInput = document.getElementById("schedule-time");
+  var timeInput = document.getElementById("schedule-time");
+  var textInput = document.getElementById("schedule-input");
   var textData = textInput.value;
   var timeData = timeInput.value;
   textInput.value = "";
   timeInput.value = "";
-  var postJSON = {"post":textData, "time":timeData}
+  var timePosted = getTime();
+  var postJSON = {"post":textData, "time":timeData, "time_posted":timePosted}
   return postJSON;
 }
 
 function makeDelayPost(post){
+  const button = document.getElementById('schedule-button');
+  button.disabled = true;
   var forum = document.getElementById("sched");
-  var username = post['username']
+  var scheduled_time = post['remaining'];
+  console.log(scheduled_time)
+  var username = post['username'];
   var forumData = post['post'];
   var time = post['time'];
   var pic = post['pic'];
   var postId = post['postId'];
-  forum.innerHTML += "<br><div class='forum-box' id='box_" + postId + "'>" + 
+  forum.innerHTML = "<br><div class='forum-box' id='box_" + postId + "'>" + 
                       "<span id=message_" + postId + " style='font-size: 20px'>" + 
                           "<div style='float:left; padding-right: 8px'><img src='/uploads/" + pic + "' width='100%' height='69px' style='border:1px solid black'></div>" +
                           username +": " + forumData + "<br>" + 
                           "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
                           "<button id= 'button_" + postId + "' onclick='comment(" + postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +
                       "</span></div>";
+  showTimer(scheduled_time);
   forum.scrollIntoView(false);
   forum.scrollTop = forum.scrollHeight - forum.clientHeight;
+
+  if (scheduled_time == 0){
+    button.disabled = false;
+    clearSchedule();
+    var timer = document.getElementById("timer");
+    timer.innerHTML = '';
+  }
+}
+
+function showTimer(schedule_time){
+  var timer = document.getElementById("timer");
+  timer.innerHTML = "<span>" + schedule_time + "</span>";
 }
 
 function clearSchedule(){
@@ -243,6 +262,7 @@ function validate_pass(){
     pass_button.setAttribute("hidden","");
   }
 }
+
 // this is the function for the show pass check box
 function show_pass(){
     var type_txt = document.getElementById("password");
@@ -260,9 +280,6 @@ function clear(){
   const chatTextBox = document.getElementById("food-text-box");
   chatTextBox.value = "";
 }
-
-// hi
-
 
 // Quote Functionality
 const quotes = [
@@ -285,83 +302,74 @@ function updateQuote() {
   document.getElementById("quote-author").textContent = `- ${dailyQuote.author}`;
 }
 
+// function schedulePost() {
+//     var forumInput = document.getElementById("forum-input");
+//     var postData = forumInput.value.trim();
+//     var scheduleTime = document.getElementById("schedule-time").value;
+//     forumInput.value = '';
 
-// here is for the schedule post ----------------
+//     if (postData && scheduleTime) {
+//         var scheduleDate = new Date(scheduleTime);
+//         var now = new Date();
+//         var delay = scheduleDate - now;
 
-function schedulePost() {
-    var forumInput = document.getElementById("forum-input");
-    var postData = forumInput.value.trim();
-    var scheduleTime = document.getElementById("schedule-time").value;
-    forumInput.value = '';
+//         if (delay > 0) {
 
-    if (postData && scheduleTime) {
-        var scheduleDate = new Date(scheduleTime);
-        var now = new Date();
-        var delay = scheduleDate - now;
+//             addScheduledPostToUI(postData, scheduleTime, delay);
+//             setTimeout(function() {
+//                 socket.emit('my post', {
+//                     post: postData,
+//                     time_posted: getTime(),
+//                     schedule_time: scheduleTime
+//                 });
+//             }, delay);
+//         } else {
+//             alert("pick a future time");
+//         }
+//     } else {
+//         alert("you forgot your message and time");
+//     }
+// }
 
-        if (delay > 0) {
+// document.addEventListener('DOMContentLoaded', function() {
+//     var scheduleButton = document.getElementById('schedule-button');
+//     if (scheduleButton) {
+//         scheduleButton.addEventListener('click', schedulePost);
+//     } else {
+//         console.error('nothing find ');
+//     }
 
-            addScheduledPostToUI(postData, scheduleTime, delay);
-            setTimeout(function() {
-                socket.emit('my post', {
-                    post: postData,
-                    time_posted: getTime(),
-                    schedule_time: scheduleTime
-                });
-            }, delay);
-        } else {
-            alert("pick a future time");
-        }
-    } else {
-        alert("you forgot your message and time");
-    }
-}
+// });
 
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    var scheduleButton = document.getElementById('schedule-button');
-    if (scheduleButton) {
-        scheduleButton.addEventListener('click', schedulePost);
-    } else {
-        console.error('nothing find ');
-    }
-
-});
-
-
-
-function addScheduledPostToUI(post, time, delay) {
-    var scheduledPostsArea = document.getElementById("scheduled-posts-area");
-//  var scheduledPostsArea = document.getElementById("forum");
-    var postElement = document.createElement("div");
-    var countdownTimer = document.createElement("span");
-    countdownTimer.id = "timer-" + Math.random().toString(36).substr(2, 9);
-    postElement.innerHTML = `Scheduled post at ${time}: ${post} - `;
-    postElement.appendChild(countdownTimer);
-    scheduledPostsArea.appendChild(postElement);
+// function addScheduledPostToUI(post, time, delay) {
+//     var scheduledPostsArea = document.getElementById("scheduled-posts-area");
+// //  var scheduledPostsArea = document.getElementById("forum");
+//     var postElement = document.createElement("div");
+//     var countdownTimer = document.createElement("span");
+//     countdownTimer.id = "timer-" + Math.random().toString(36).substr(2, 9);
+//     postElement.innerHTML = `Scheduled post at ${time}: ${post} - `;
+//     postElement.appendChild(countdownTimer);
+//     scheduledPostsArea.appendChild(postElement);
 
 
-    startCountdown(countdownTimer.id, delay);
-}
+//     startCountdown(countdownTimer.id, delay);
+// }
 
-function startCountdown(timerId, delay) {
-    var timerElement = document.getElementById(timerId);
-    var endTime = Date.now() + delay;
-    var interval = setInterval(function() {
-        var msLeft = endTime - Date.now();
-        if (msLeft <= 0) {
-            timerElement.innerHTML = 'Posting now...';
-            clearInterval(interval);
-        } else {
-            var seconds = Math.floor(msLeft / 1000) % 60;
-            var minutes = Math.floor(msLeft / 60000) % 60;
-            var hours = Math.floor(msLeft / 3600000);
-            timerElement.innerHTML = `${hours}h ${minutes}m ${seconds}s remaining`;
-        }
-    }, 1000);
-}
+// function startCountdown(timerId, delay) {
+//     var timerElement = document.getElementById(timerId);
+//     var endTime = Date.now() + delay;
+//     var interval = setInterval(function() {
+//         var msLeft = endTime - Date.now();
+//         if (msLeft <= 0) {
+//             timerElement.innerHTML = 'Posting now...';
+//             clearInterval(interval);
+//         } else {
+//             var seconds = Math.floor(msLeft / 1000) % 60;
+//             var minutes = Math.floor(msLeft / 60000) % 60;
+//             var hours = Math.floor(msLeft / 3600000);
+//             timerElement.innerHTML = `${hours}h ${minutes}m ${seconds}s remaining`;
+//         }
+//     }, 1000);
+// }
 
 

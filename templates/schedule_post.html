@@ -14,7 +14,7 @@
 
     <body class="background" > 
         <div class="header" style="height: 120px;">
-            <a class="welcome">Schedule posts</a>
+            <a class="welcome">Schedule Posts</a>
             <span class="nav-button" onclick="openNav()">&#9783;</span>
         </div>
 
@@ -24,6 +24,7 @@
             <a href="/templates/register.html">Account</a>
             <a href="/templates/meditation.html">Meditation</a>
             <a href="/templates/share.html">Share</a>
+            <a href="/templates/schedule_post.html">Schedule Post</a>
         </div>
 
 
@@ -39,8 +40,12 @@
         <button style="margin-left: 20px; background-color: black; color: white; width: 100px; height: 30px;" id="schedule-button">Schedule</button>
         <br>
         <br>
-        <label for="sched" style="margin-left: 20px">Your pending post:</label>
-        <div id="sched" style="margin: 20px"></div><br>
+        <label style="margin-left: 20px">Your pending post:
+            <div id="sched" style="margin: 20px"></div>
+        </label>
+        <p style="margin: 20px;font-size: x-large;">Seconds Left:
+            <div id="timer" style="margin: 20px;font-size: x-large;"></div>
+        </p>
 
 
 

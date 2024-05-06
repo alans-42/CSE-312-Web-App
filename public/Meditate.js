@@ -128,7 +128,7 @@ function forwardButton(){
   }, 5000);
 }
 function startTimer() {
-    let timeLeft = 183; // 5 minutes in seconds extra 4 seconds for transition times
+    let timeLeft = 183; // 3 minutes in seconds extra 4 seconds for transition times
     noButton()
     const timer3 = document.getElementById('timer2');
     const timer2 = document.getElementById('timer1');
@@ -137,6 +137,7 @@ function startTimer() {
     timer3.classList.toggle('poof');
     setTimeout(() => {
       timer.classList.toggle('fade-in');
+      // MUSIC
     }, 4000);
     const countdown = setInterval(function() {
     const minutes = Math.floor(timeLeft / 60);
@@ -180,7 +181,7 @@ function startTimer1() {
 }, 1000);
 }
 function startTimer2() {
-  let timeLeft = 483; // 5 minutes in seconds extra 4 seconds for transition times
+  let timeLeft = 483; // 8 minutes in seconds extra 4 seconds for transition times
   noButton()
   const timer2 = document.getElementById('timer1');
   const timer3 = document.getElementById('timer');

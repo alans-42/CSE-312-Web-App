@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Generic Fitness App</title>
+        <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+        <script src="/public/functions.js" type="text/javascript"></script>
+    </head>
+
+    <link rel="stylesheet" href="/public/style.css">
+    <link rel="" href="/public/style.css">
+
+
+
+    <body class="background" > 
+        <div class="header" style="height: 120px;">
+            <a class="welcome">Schedule posts</a>
+            <span class="nav-button" onclick="openNav()">&#9783;</span>
+        </div>
+
+        <div id="navbar" class="navbar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/">Home</a>
+            <a href="/templates/register.html">Account</a>
+            <a href="/templates/meditation.html">Meditation</a>
+            <a href="/templates/share.html">Share</a>
+        </div>
+
+
+        
+        <label style="margin-left: 20px; font-size: 20px; color: black; text-align: center;">Share later:<br>
+            <textarea id="schedule-input" name="forum-input" rows="4" cols="50" maxlength="200" style="resize: none; margin-left: 20px"></textarea><br>
+        </label>
+        <br>
+
+        <label style="margin-left: 20px; font-size: 15px; color: black;">Minutes until post</label>
+        <input type="number" id="schedule-time" name="schedule-time" style="margin-left: 20px;"></input>
+        <br><br>
+        <button style="margin-left: 20px; background-color: black; color: white; width: 100px; height: 30px;" id="schedule-button">Schedule</button>
+        <br>
+        <br>
+        <label for="sched" style="margin-left: 20px">Your pending post:</label>
+        <div id="sched" style="margin: 20px"></div><br>
+
+
+
+        <script>
+            const socket = io.connect({transports: ['websocket']});
+            document.getElementById("schedule-button").onclick = test =>{
+                var payload = delayPost();
+                socket.emit("my schedule",payload);
+            };
+            socket.on('timer response',function(incoming_data){
+                makeDelayPost(incoming_data);
+            });
+            
+        </script>
+
+
+    </body>
+</html>

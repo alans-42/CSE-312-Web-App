@@ -134,6 +134,39 @@ function sendPost(){
   // request.send(JSON.stringify(postJSON));
   // setTimeout(refreshPosts, 100);
 }
+function delayPost(){
+  var timeInput = document.getElementById("schedule-input");
+  var textInput = document.getElementById("schedule-time");
+  var textData = textInput.value;
+  var timeData = timeInput.value;
+  textInput.value = "";
+  timeInput.value = "";
+  var postJSON = {"post":textData, "time":timeData}
+  return postJSON;
+}
+
+function makeDelayPost(post){
+  var forum = document.getElementById("sched");
+  var username = post['username']
+  var forumData = post['post'];
+  var time = post['time'];
+  var pic = post['pic'];
+  var postId = post['postId'];
+  forum.innerHTML += "<br><div class='forum-box' id='box_" + postId + "'>" + 
+                      "<span id=message_" + postId + " style='font-size: 20px'>" + 
+                          "<div style='float:left; padding-right: 8px'><img src='/uploads/" + pic + "' width='100%' height='69px' style='border:1px solid black'></div>" +
+                          username +": " + forumData + "<br>" + 
+                          "<a style='font-size: 12px'>Posted: " + time + "</a><br>" + 
+                          "<button id= 'button_" + postId + "' onclick='comment(" + postId + ")' style='font-size: 12px; color: Blue; background:none; border:none;'><u>Comment</u></button>" +
+                      "</span></div>";
+  forum.scrollIntoView(false);
+  forum.scrollTop = forum.scrollHeight - forum.clientHeight;
+}
+
+function clearSchedule(){
+  var forum = document.getElementById("sched");
+  forum.innerHTML = "";
+}
 
 function submit_username(){
     document.getElementById("username_form").style.width = "0px"

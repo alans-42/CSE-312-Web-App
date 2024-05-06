@@ -2,30 +2,24 @@ from flask import Flask, send_file, make_response, render_template, request, sen
 from flask_socketio import SocketIO, emit
 from helper import *
 from html import escape
-import math, mimetypes, sys, os, uuid
+import math, mimetypes, sys, os, uuid, json, time
 from werkzeug.utils import secure_filename
 from bson.json_util import dumps
-import json
 from flask_limiter import Limiter
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_limiter.util import get_remote_address
 from flask import Blueprint
+from scheduled_msg import ScheduledMSG
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 all_reqs = Blueprint("all_reqs", __name__)
 
-
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
-
 limiter = Limiter(key_func=get_remote_address,app=app,meta_limits=["1 per 30 seconds"])
-
-
-
-
 app_lim = limiter.shared_limit(limit_value ="50 per 10 seconds", scope="all_reqs",error_message="Too many requests, Try again soon!")
-
-
+schedule_msgs = {}
 
 @socketio.on('my post')
 def sock_data(message):
@@ -43,7 +37,6 @@ def sock_data(message):
     post_save(post)
     emit('my response',[{'post':escape(message["post"]),'postId':my_id,'likes': 0, 'comments': [],"username":username,"time":message["time_posted"], "pic":pic}],broadcast=True)
 
-
 @socketio.on('connect')
 def connect():
     posts = GET_posts()
@@ -60,6 +53,24 @@ def show_comment(comment):
     save_comment({'username':username,'post_id':comment['post_id'],'commentData':escape(comment['comment'])})
     comment_dict = {'username': username, 'comment': escape(comment['comment']), 'commentId': len(comment['comment'])+1,"post_id":comment["post_id"]}
     emit('comment response',comment_dict, broadcast=True)
+
+@socketio.on('my schedule')
+def schedule_msg(payload):
+    auth_toke = request.cookies.get("auth_toke", -1)
+    if auth_toke != -1:
+        user = check_token(auth_toke)
+        if user:
+            username = user["username"]
+            my_id = post_id()
+            pic = user.get('profile_pic', 'default.jpg')
+            schMSG = find_schedules_msg(my_id, schedule_msgs, int(payload["time"]))
+            post = {'post':escape(payload["post"]), 'postId':my_id, 'likes': 0, 'comments': [], "username":username, "time":payload["time_posted"], "pic": pic}
+            scheduled_save(post)
+            while schMSG.running:
+                data = {'post':escape(payload["post"]), 'postId':my_id, 'likes': 0, 'comments': [], "username":username, "time":payload["time_posted"], "pic": pic, "remaining": schMSG.remaining}
+                time.sleep(1)
+                emit('timer response', data)
+            posts.insert_one(data)
 
 @app.route('/', methods=['GET'])
 @app_lim
@@ -294,12 +305,6 @@ def upload_profile_picture():
 @app_lim
 def uploaded_file(filename):
     return send_from_directory('/root/uploads', filename)
-
-
-
-
-
-
 
 if __name__ == "__main__":
     host = '0.0.0.0'

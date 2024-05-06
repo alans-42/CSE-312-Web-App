@@ -1,10 +1,7 @@
 import bcrypt, secrets, hashlib, json
 from pymongo import MongoClient
 from html import escape
-import datetime
-import threading
-import time
-from datetime import datetime
+from scheduled_msg import ScheduledMSG
 
 
 from flask_socketio import SocketIO
@@ -110,6 +107,9 @@ def post_id():
 
 def post_save(dict1):
     posts.insert_one(dict1)
+
+def scheduled_save(dict):
+    scheduled_posts.insert_one(dict)
     
 def POST_posts(user, data):
     data = json.loads(data.decode())
@@ -122,8 +122,6 @@ def POST_posts(user, data):
     post = {'username': username, 'post': postData, 'time': time, 'postId': postId['id'], 'pic': profile_pic, 'likes': 0, 'comments': []}
     ids.update_one({'id': postId['id']}, {'$set': {'id': postId['id']+1}})
     posts.insert_one(post)
-
-
 
 def GET_posts():
     allPosts = posts.find({},{'_id':0})
@@ -156,3 +154,7 @@ def save_comment(data):
     newConnects.append(comment)
     posts.update_one({'postId': postId}, {'$set': {'comments': newConnects}})
 
+def find_schedules_msg(my_id, schedules_msgs, time):
+    if my_id in schedules_msgs:
+        return schedules_msgs[my_id]
+    return ScheduledMSG(my_id, time)

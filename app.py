@@ -68,7 +68,7 @@ def schedule_msg(payload):
             scheduled_save(post)
             while schMSG.running:
                 data = {'post':escape(payload["post"]), 'postId':my_id, 'likes': 0, 'comments': [], "username":username, "time":payload["time_posted"], "pic": pic, "remaining": schMSG.remaining}
-                time.sleep(1)
+                time.sleep(.95)
                 emit('timer response', data)
             posts.insert_one(data)
 

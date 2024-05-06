@@ -133,9 +133,11 @@ function startTimer() {
     const timer3 = document.getElementById('timer2');
     const timer2 = document.getElementById('timer1');
     const timer = document.getElementById('timer');
+    var audio = new Audio('/public/music11.mp3');
     timer2.classList.toggle('poof');
     timer3.classList.toggle('poof');
     setTimeout(() => {
+      audio.play();
       timer.classList.toggle('fade-in');
       // MUSIC
     }, 4000);
@@ -160,10 +162,13 @@ function startTimer1() {
   const timer2 = document.getElementById('timer2');
   const timer = document.getElementById('timer1');
   const timer3 = document.getElementById('timer');
+  var audio = new Audio('/public/music.mp3');
   timer2.classList.toggle('poof');
   timer3.classList.toggle('poof');
   setTimeout(() => {
     timer.classList.toggle('fade-in');
+     audio.play();
+    // MUSIC
   }, 4000);
   const countdown = setInterval(function() {
   const minutes = Math.floor(timeLeft / 60);
@@ -186,10 +191,13 @@ function startTimer2() {
   const timer2 = document.getElementById('timer1');
   const timer3 = document.getElementById('timer');
   const timer = document.getElementById('timer2');
+  var audio = new Audio('/public/music8.mp3');
   timer2.classList.toggle('poof');
   timer3.classList.toggle('poof');
     setTimeout(() => {
       timer.classList.toggle('fade-in');
+      audio.play();
+      // MUSIC
     }, 4000);
   const countdown = setInterval(function() {
   const minutes = Math.floor(timeLeft / 60);
@@ -330,3 +338,6 @@ function hidden7() {
       y.style.display = "none";
     }
 }
+
+
+

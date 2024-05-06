@@ -32,6 +32,15 @@
     background-color: palevioletred;
 }
 
+#sched {
+    height: 150px;
+    width: auto;
+    background-color: gray;
+    overflow-y: scroll;
+    overflow-wrap: break-word;
+    border-style: solid;
+}
+
 /* All for post functionality */
 #forum {
     height: 500px;

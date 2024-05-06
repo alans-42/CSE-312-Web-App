@@ -182,11 +182,11 @@ function startTimer1() {
 function startTimer2() {
   let timeLeft = 483; // 5 minutes in seconds extra 4 seconds for transition times
   noButton()
-  const timer2 = document.getElementById('timer2');
+  const timer2 = document.getElementById('timer1');
   const timer3 = document.getElementById('timer');
+  const timer = document.getElementById('timer2');
   timer2.classList.toggle('poof');
   timer3.classList.toggle('poof');
-  const timer = document.getElementById('timer2');
     setTimeout(() => {
       timer.classList.toggle('fade-in');
     }, 4000);

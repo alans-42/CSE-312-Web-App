@@ -53,6 +53,9 @@ function backButton(){
   const text = document.getElementById('animatedText');
   const forward = document.getElementById('forward');
   forward.style.display = "block";
+  start2.style.display = "none";
+  start3.style.display = "none";
+  start4.style.display = "none";
   back.style.display = "none";
   back.classList.toggle('poof');
   start2.classList.toggle('fade-out1')
@@ -93,7 +96,9 @@ function forwardButton(){
   const text = document.getElementById('animatedText');
   const forward = document.getElementById('forward');
   forward.style.display = "none";
-
+  start2.style.display = "block";
+  start3.style.display = "block";
+  start4.style.display = "block";
   forward.classList.add('poof');
   start2.classList.remove('fade-out1')
   start3.classList.remove('fade-out1')
@@ -226,10 +231,10 @@ function toggleAnimation() {
   text.classList.toggle('fade-in');
   setTimeout(() => {
       text.classList.toggle('fade-out');
-  }, 5000);
+  }, 35000);
   setTimeout(() => {
     text.classList.toggle('poof');
-}, 7000);
+}, 37000);
   setTimeout(() => {
       text1.classList.toggle('fade-in');
       text3.classList.toggle('fade-in');
@@ -237,7 +242,7 @@ function toggleAnimation() {
       text5.classList.toggle('fade-in');
       text6.classList.toggle('fade-in');
       back.classList.toggle('fade-in')
-  }, 8000);
+  }, 38000);
 
 }
 function hidden1() {
